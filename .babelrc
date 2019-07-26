@@ -1,0 +1,10 @@
+{
+  "presets": [
+    [
+      "@babel/preset-react",
+      {
+        "pragma": "Xue.prototype._parseJSX", // default pragma is React.createElement
+      }
+    ]
+  ]
+}
