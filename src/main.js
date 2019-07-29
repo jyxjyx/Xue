@@ -1,5 +1,5 @@
 import { stateMixin } from './modules/state';
-import elementMixin from './modules/element';
+import { elementMixin } from './modules/element';
 import { initMixin } from './modules/init';
 import { hooksMixin } from './modules/hooks';
 import warn from './utils/warn';

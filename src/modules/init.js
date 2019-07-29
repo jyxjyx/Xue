@@ -1,7 +1,8 @@
 import { initHooks } from './hooks';
-import { initState, defineReactive } from './state';
+import { initState } from './state';
 import Watcher from '../utils/watcher';
 import Dep from '../utils/dep';
+import { parseJsxObj, update } from '../modules/element';
 
 export const initMixin = function(Xue) {
   Xue.prototype.init = (xm, options) => {
@@ -24,7 +25,10 @@ export const initMixin = function(Xue) {
     // 调用render生成VNode
     // ...
     Dep.target = xm.$watcher = new Watcher('render', xm.$render);
-    xm.$render(); //返回解析对象
+    const vnodeTree = parseJsxObj(xm.$render());
+    const dom = update(vnodeTree);
+    
+    console.log({dom})
 
 
     xm._callHook.call(xm, 'beforeMount');

@@ -1,5 +1,7 @@
 const DEFAULT_OBJ = {};
 const DEFAULT_FN = function() {};
+
+// 验证options的类型的对象
 export const OPTIONS_NORM = {
   data: {
     type: 'function',
@@ -73,6 +75,7 @@ export const OPTIONS_NORM = {
   },
 };
 
+// 生命周期常量
 export const HOOK_NAMES = [
   'beforeCreate',
   'created',
@@ -82,4 +85,12 @@ export const HOOK_NAMES = [
   'updated',
   'beforeDestory',
   'destoryed'
+];
+
+// 原生DOM标签
+export const NativeTags = [
+  'div',
+  'p',
+  'a',
+  'span',
 ];

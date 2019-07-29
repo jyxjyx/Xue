@@ -21,6 +21,10 @@ let c = new Xue({
     return (<div>
       { this.test }
       { this.test2.a }
+      
+      <div onClick={this.fn1} onclass='c1' className='c2'>div1<div>div3</div></div>
+      <div>div2</div>
+
     </div>);
   },
   beforeCreate() {
