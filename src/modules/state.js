@@ -1,6 +1,6 @@
 import proxy from '../utils/proxy';
 import warn from '../utils/warn';
-import Dep from '../utils/dep';
+import Dep from '../classes/dep';
 
 
 export const stateMixin = function(Xue) {

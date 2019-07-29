@@ -2,6 +2,7 @@ import Xue from './src/main';
 let a = <div className='class_a'>hahaha</div>
 console.log(a)
 let c = new Xue({
+  root: '#app',
   watch: {
     a() {},
     b: 123
@@ -15,7 +16,9 @@ let c = new Xue({
     }
   },
   methods: {
-    fn1() {}
+    fn1() {
+      console.log('i have been clicked')
+    }
   },
   render() {
     return (<div>

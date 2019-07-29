@@ -1,7 +1,7 @@
 import { initHooks } from './hooks';
 import { initState } from './state';
-import Watcher from '../utils/watcher';
-import Dep from '../utils/dep';
+import Watcher from '../classes/watcher';
+import Dep from '../classes/dep';
 import { parseJsxObj, update } from '../modules/element';
 
 export const initMixin = function(Xue) {
@@ -19,25 +19,25 @@ export const initMixin = function(Xue) {
 
     xm._callHook.call(xm, 'created');
 
-    // 响应式
-
-
     // 调用render生成VNode
-    // ...
-    Dep.target = xm.$watcher = new Watcher('render', xm.$render);
-    const vnodeTree = parseJsxObj(xm.$render());
-    const dom = update(vnodeTree);
+    Dep.target = xm.$watcher = new Watcher('render', () => {
+      xm._callHook.call(xm, 'beforeUpdate');
+      const newVnodeTree = parseJsxObj(xm.$render());
+      update(newVnodeTree, xm.$vnodeTree);
+    }, () => {
+      xm._callHook.call(xm, 'updated');
+      // 重新缓存
+      xm.$vnodeTree = parseJsxObj(xm.$render());
+    });
+    // 生成vnode
+    xm.$vnodeTree = parseJsxObj(xm.$render());
     
-    console.log({dom})
-
-
     xm._callHook.call(xm, 'beforeMount');
 
-    // 挂载DOM
-    // ...
+    // 生成并挂载DOM
+    xm._mount.call(xm, update(xm.$vnodeTree).el);
 
     xm._callHook.call(xm, 'mounted');
-
 
   }
 };

@@ -1,3 +1,4 @@
+import warn from './warn';
 const DEFAULT_OBJ = {};
 const DEFAULT_FN = function() {};
 
@@ -94,3 +95,9 @@ export const NativeTags = [
   'a',
   'span',
 ];
+
+// 扩展NativeTags方法
+export const addNativeTags = function(tag) {
+  if(typeof tag !== 'string') warn('the first parameter of addNativeTags should be a string');
+  NativeTags.push(tag);
+};

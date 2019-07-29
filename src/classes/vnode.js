@@ -1,4 +1,5 @@
 import JSXObj from './jsxObj';
+import { NativeTags } from '../utils/constant';
 
 class VNode {
   constructor(tagMsg) {
@@ -8,6 +9,14 @@ class VNode {
       this.children = [];
       this.attrs = {};
       this.events = {};
+      // 判断是否是原生标签
+      if(NativeTags.includes(this.tag)) this.isNativeTag = true;
+      // 如果不是，则进行组件化处理
+      else {
+        // TODO:组件化逻辑暂时跳过
+        this.isNativeTag = false;
+        
+      }
       // 对attrs进行处理，分离出属性和事件
       tagMsg.attrs && Object.entries(tagMsg.attrs).forEach(([key, value]) => {
         if(key.match(/on[A-Z][a-zA-Z]*/)) {
@@ -24,11 +33,11 @@ class VNode {
     }
 
   }
-  addChildren(children) {
-    this.children = children;
-  }
   addChild(child) {
     this.children.push(child);
+  }
+  addElement(el) {
+    this.el = el;
   }
 }
 export default VNode;

@@ -1,4 +1,4 @@
-import { addUpdateQueue } from './queue';
+import { addUpdateQueue } from '../utils/queue';
 
 let id = 0;
 
