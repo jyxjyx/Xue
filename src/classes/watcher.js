@@ -1,6 +1,6 @@
 let id = 0;
 class Watcher {
-  constructor(type, cb) {
+  constructor(cb, type) {
     this.id = id++;
     this.deps = [];
     this.type = type;
@@ -12,7 +12,6 @@ class Watcher {
   }
   run() {
     this.cb();
-    console.log('i have update')
   }
 }
 export default Watcher;

@@ -20,11 +20,11 @@ export const initMixin = function(Xue) {
     xm._callHook.call(xm, 'created');
 
     // 调用render生成VNode
-    Dep.target = xm.$watcher = new Watcher('render', () => {
+    Dep.target = xm.$watcher = new Watcher(() => {
       xm._callHook.call(xm, 'beforeUpdate');
       const newVnodeTree = parseJsxObj(xm.$render());
       xm.$vnodeTree = update(newVnodeTree, xm.$vnodeTree);
-    }, () => {
+    }, 'render', () => {
       xm._callHook.call(xm, 'updated');
       // 重新缓存
       xm.$vnodeTree = parseJsxObj(xm.$render());
