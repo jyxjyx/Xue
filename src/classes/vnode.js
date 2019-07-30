@@ -3,12 +3,12 @@ import { NativeTags } from '../utils/constant';
 
 class VNode {
   constructor(tagMsg) {
+    this.children = [];
+    this.attrs = {};
+    this.events = {};
     // 如果是JSXObj对象，则进行解析
     if(tagMsg instanceof JSXObj) {
       this.tag = tagMsg.tag;
-      this.children = [];
-      this.attrs = {};
-      this.events = {};
       // 判断是否是原生标签
       if(NativeTags.includes(this.tag)) this.isNativeTag = true;
       // 如果不是，则进行组件化处理
@@ -26,18 +26,21 @@ class VNode {
         else this.attrs[key] = value;
       })
     }
+    else if(tagMsg === null) {
+      this.tag = null;
+    }
     // 如果不是，则默认当做文本节点处理，文本节点的tag属性为空字符串
     else {
       this.tag = '';
-      this.text = tagMsg.toString();
+      this.text = tagMsg;
     }
 
   }
   addChild(child) {
     this.children.push(child);
   }
-  addElement(el) {
-    this.el = el;
+  addElement(element) {
+    this.element = element;
   }
 }
 export default VNode;

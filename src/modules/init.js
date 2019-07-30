@@ -23,16 +23,17 @@ export const initMixin = function(Xue) {
     Dep.target = xm.$watcher = new Watcher('render', () => {
       xm._callHook.call(xm, 'beforeUpdate');
       const newVnodeTree = parseJsxObj(xm.$render());
-      update(newVnodeTree, xm.$vnodeTree);
+      xm.$vnodeTree = update(newVnodeTree, xm.$vnodeTree);
     }, () => {
       xm._callHook.call(xm, 'updated');
       // 重新缓存
       xm.$vnodeTree = parseJsxObj(xm.$render());
     });
-    // 生成vnode
-    xm.$vnodeTree = parseJsxObj(xm.$render());
     
     xm._callHook.call(xm, 'beforeMount');
+
+    // 生成vnode
+    xm.$vnodeTree = parseJsxObj(xm.$render());
 
     // 生成并挂载DOM
     xm._mount.call(xm, update(xm.$vnodeTree).el);
