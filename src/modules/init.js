@@ -2,7 +2,7 @@ import { initHooks } from './hooks';
 import { initState } from './state';
 import Watcher from '../classes/watcher';
 import Dep from '../classes/dep';
-import { parseJsxObj, update } from '../modules/element';
+import { parseJsxObj, update, createDOMTree } from '../modules/element';
 
 export const initMixin = function(Xue) {
   Xue.prototype.init = (xm, options) => {
@@ -23,7 +23,7 @@ export const initMixin = function(Xue) {
     Dep.target = xm.$watcher = new Watcher(() => {
       xm._callHook.call(xm, 'beforeUpdate');
       const newVnodeTree = parseJsxObj(xm.$render());
-      xm.$vnodeTree = update(newVnodeTree, xm.$vnodeTree);
+      xm.$vnodeTree = update(xm, newVnodeTree, xm.$vnodeTree);
     }, 'render', () => {
       xm._callHook.call(xm, 'updated');
       // 重新缓存
@@ -36,7 +36,7 @@ export const initMixin = function(Xue) {
     xm.$vnodeTree = parseJsxObj(xm.$render());
 
     // 生成并挂载DOM
-    xm._mount.call(xm, update(xm.$vnodeTree).el);
+    xm._mount.call(xm, createDOMTree(xm.$vnodeTree, xm).el);
 
     xm._callHook.call(xm, 'mounted');
 

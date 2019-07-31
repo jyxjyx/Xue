@@ -1,6 +1,5 @@
 import Xue from './src/main';
-let a = <div className='class_a'>hahaha</div>
-console.log(a)
+
 let c = new Xue({
   root: '#app',
   watch: {
@@ -9,38 +8,49 @@ let c = new Xue({
   },
   data() {
     return {
-      test: 1,
+      test1: 'i am text1',
       test2: {
-        a: 1
+        a: 'i am text2 attr a'
       }
     }
   },
   methods: {
     fn1() {
-      console.log('i have been clicked')
+      console.log(this)
+
+      console.log('i am fn1')
+    },
+    fn2() {
+      console.log(this)
+      console.log('i am fn2')
     }
   },
   render() {
     return (<div>
-      { this.test }
+      { this.test1 }
+      <br />
       { this.test2.a }
-      3
-      { this.test === 2 ? <div>hh</div> : null }
-      <div onClick={this.fn1} onclass='c1' className='c2' id='id1'>div1<div>div3</div></div>
-      <div>div2</div>
+      <br />
+      { this.test1 === 'i am text1' ? 'text1 === i am text1' : 'text1 === i am text1 change' }
+      <br />
+      { this.test1 === 'i am text1' ? null : <div>i have been rendered when test1 !== i am text1 </div> }
 
+      { this.test1 === 'i am text1' ? <div>i have been rendered when test1 === i am text1 </div>: null }
+
+      { this.test1 === 'i am text1' ? <a>i am a node when text1 === i am text1<span> i am inner</span></a> : <span>i am a node when text1 === i am text1 change</span> }
+      <br />
+      { this.test1 === 'i am text1' ? <a>i am a node when text1 === i am text1</a> : <span>i am a node when text1 === i am text1 change<span> i am inner</span></span> }
+      <br />
+      <div onClick={this.test === 'i am text1' ? this.fn1 : this.fn2} className={this.test === 'i am text1' ? 'cls1' : 'cls2'} id='id1'>my attrs and events will be change</div>
     </div>);
   },
   beforeCreate() {
     setTimeout(() => {
-      this.test = 2;
-      this.test2.a = 2;
-      console.log(this.$data);
-      document.querySelector('#id1').addEventListener('click', () => {
-        console.log(2222)
-      })
+      this.test1 = 'i am text1 change';
+      this.test2.a = 'i am text2 attr a change';
+      console.log('settimeout');
     }, 3000)
   }
 });
 
-console.log(c)
+// console.log(c)
