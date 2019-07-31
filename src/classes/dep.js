@@ -16,7 +16,6 @@ class Dep {
     Dep.target = watcher;
   }
   notify() {
-    debugger
     addUpdateQueue(this.watchers);
   }
 }
