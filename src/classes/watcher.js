@@ -11,7 +11,6 @@ class Watcher {
     if(dep && !depIds.includes(dep.id)) this.deps.push(dep);
   }
   run() {
-    console.log('i am watcher')
     this.cb();
   }
 }

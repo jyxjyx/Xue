@@ -36,7 +36,7 @@ export const initMixin = function(Xue) {
     xm.$vnodeTree = parseJsxObj(xm.$render());
 
     // 生成并挂载DOM
-    xm._mount.call(xm, createDOMTree(xm.$vnodeTree, xm).el);
+    xm._mount.call(xm, createDOMTree(xm, xm.$vnodeTree).el);
 
     xm._callHook.call(xm, 'mounted');
 

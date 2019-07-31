@@ -32,9 +32,9 @@ export const parseJsxObj = function(jsxObj) {
   return vnodeTree;
 }
 // 首次渲染时生成DOM树
-export const createDOMTree = function(vnodeTree, xm) {
+export const createDOMTree = function(xm, vnodeTree) {
   const elementTree = new Element(vnodeTree, xm);
-  vnodeTree.children.forEach(item => elementTree.appendChild(createDOMTree(item, xm)));
+  vnodeTree.children.forEach(item => elementTree.appendChild(createDOMTree(xm, item)));
   vnodeTree.addElement(elementTree);
   return elementTree;
 }

@@ -5,6 +5,7 @@ let waiting = false;
 export const addUpdateQueue = function(watchers) {
   const queueSet = new Set([...queue, ...watchers]);
   queue = [...queueSet];
+  // 排序是为了保证父组件的watcher先与子组件生成
   queue.sort((a, b) => a.id - b.id);
   if(!waiting) {
     waiting = true;

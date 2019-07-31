@@ -19,12 +19,16 @@ class Element {
     else this.el = document.createTextNode(vnode.text);
 
   }
+  // 添加子节点
   appendChild(element) {
     this.el && element.el && this.el.appendChild(element.el);
   }
+  // 移除子节点
   removeChild(element) {
     this.el && element.el && this.el.removeChild(element.el);
   }
+  // 添加属性，对className和style做特殊处理
+  // class是保留字，style接受一个对象
   setAttribute(name, value) {
     if(name === 'className') {
       this.el.setAttribute('class', value);
@@ -38,16 +42,20 @@ class Element {
       this.el.setAttribute(name, value);
     }
   }
+  // 添加事件监听
   addEventListener(name, handler) {
     this.el.addEventListener(name, handler);
   }
+  // 移除事件监听
   removeEventListener(name, handler) {
     this.el.removeEventListener(name, handler);
   }
+  // 更新文本节点
   updateText(text, oldElement) {
     oldElement.updateTextContent(text);
     this.el = oldElement.el;
   }
+  // 更新文本内容
   updateTextContent(text) {
     this.el.textContent = text;
   }

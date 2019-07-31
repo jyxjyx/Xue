@@ -36,9 +36,11 @@ class VNode {
     }
 
   }
+  // 添加子节点
   addChild(child) {
     this.children.push(child);
   }
+  // 缓存真实DOM
   addElement(element) {
     this.element = element;
   }
