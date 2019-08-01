@@ -3,6 +3,7 @@ import JSXObj from '../classes/jsxObj';
 import Element from "../classes/element";
 import { addNativeTags } from '../utils/constant';
 import nextTick from '../utils/nextTick';
+import warn from '../utils/warn';
 
 export const elementMixin = function(Xue) {
   Xue.prototype._parseJSX = (tag, attrs, ...children) => {
@@ -51,62 +52,76 @@ export const diff = function(xm, newVNode, oldVNode, parentVNode, nextBroNode) {
   // 旧节点不存在
   // 或者旧节点为null，新节点不为null
   if(!oldVNode || (oldVNode.tag === null && newVNode.tag !== null)) {
-    diffType = 'addNode';
     // 有节点新增
-    diffAddNode(newVNode, oldVNode, parentVNode, nextBroNode);
+    diffType = 'addNode';
   }
   // 新节点不存在
   // 或者新节点为null，旧节点不为null
   else if(!newVNode || (oldVNode.tag !== null && newVNode.tag === null)) {
-    diffType = 'delNode';
     // 有节点删除
-    diffDelNode(newVNode, oldVNode, parentVNode);
+    diffType = 'delNode';
   }
   // 节点标签不一样，直接替换
   else if(oldVNode.tag !== newVNode.tag) {
-    diffType = 'replaceNode';
     // 替换节点
-    diffReplaceNode(newVNode, oldVNode, parentVNode);
+    diffType = 'replaceNode';
   }
   // 文本节点时，直接用新的文本节点替换旧的文本节点
   else if(newVNode.tag === '') {
     diffType = 'replaceText';
-    diffTextNode(newVNode, oldVNode, parentVNode);
   }
-  // 比较属性和事件
   else {
+    // 比较属性和事件
     diffType = 'updateAttrsAndEvents';
-    diffAttribute(newVNode, oldVNode);
-    diffEvent(xm, newVNode, oldVNode);
   }
+  diffUpdateHandler(diffType, xm, newVNode, oldVNode, parentVNode, nextBroNode);
   // 递归处理子节点
   for(let i = 0; i < newVNode.children.length; i++) {
     // 下一个兄弟节点，为了在新增节点时，插入至正确的位置
     const nextBroNode = (i === newVNode.children.length - 1) ? null : oldVNode.children[i + 1];
     let oldVNodeParam = oldVNode && oldVNode.children[i];
+    // 新增的节点的子节点和被替换后的节点的子节点，其在oldVNode中都是没有对应的值的
     if(diffType === 'addNode' || diffType === 'replaceNode') oldVNodeParam = undefined;
     diff(xm, newVNode.children[i], oldVNodeParam, newVNode, nextBroNode);
   }
 }
+// 对不同diff进行处理
+export const diffUpdateHandler = function(diffType, xm, newVNode, oldVNode, parentVNode, nextBroNode) {
+  switch(diffType) {
+    case 'addNode': diffAddNode(xm, newVNode, oldVNode, parentVNode, nextBroNode); break;
+    case 'delNode': diffDelNode(xm, newVNode, oldVNode, parentVNode); break;
+    case 'replaceNode': diffReplaceNode(xm, newVNode, oldVNode, parentVNode); break;
+    case 'replaceText': diffUpdateText(xm, newVNode, oldVNode, parentVNode); break;
+    case 'updateAttrsAndEvents': diffAttribute(xm, newVNode, oldVNode); diffEvent(xm, newVNode, oldVNode); break;
+    default: warn(`error diffType: ${ diffType }`);
+  }
+}
 // 添加新节点
-export const diffAddNode = function(newVNode, oldVNode, parentVNode, nextBroNode) {
-  const newElement = new Element(newVNode, this)
+export const diffAddNode = function(xm, newVNode, oldVNode, parentVNode, nextBroNode) {
+  const newElement = new Element(newVNode, xm);
   parentVNode.element.insertBefore(newElement, nextBroNode && nextBroNode.element);
   newVNode.addElement(newElement);
 }
 // 删除旧节点
-export const diffDelNode = function(newVNode, oldVNode, parentVNode) {
+export const diffDelNode = function(xm, newVNode, oldVNode, parentVNode) {
   parentVNode.element.removeChild(oldVNode.element);
-  newVNode.addElement(new Element(new VNode(null), this));
+  newVNode.addElement(new Element(new VNode(null), xm));
 }
 // 替换旧节点
-export const diffReplaceNode = function(newVNode, oldVNode, parentVNode) {
-  const newElement = new Element(newVNode, this);
+export const diffReplaceNode = function(xm, newVNode, oldVNode, parentVNode) {
+  const newElement = new Element(newVNode, xm);
   parentVNode.element.replaceChild(newElement, oldVNode.element);
   newVNode.addElement(newElement);
 }
+// 比较文本节点
+export const diffUpdateText = function(xm, newVNode, oldVNode, parentVNode) {
+  if(newVNode.text !== oldVNode.text) {
+    oldVNode.element.updateTextContent(newVNode.text);
+  }
+  newVNode.addElement(oldVNode.element);
+}
 // 比较属性
-export const diffAttribute = function(newVNode, oldVNode) {
+export const diffAttribute = function(xm, newVNode, oldVNode) {
   // 拿到需要比较的所有属性
   const attrs = new Set(Object.keys(newVNode.attrs).concat(Object.keys(oldVNode.attrs)));
   // 更新属性
@@ -123,15 +138,11 @@ export const diffEvent = function(xm, newVNode, oldVNode) {
       // 移除旧事件的响应函数
       oldVNode.element.removeEventListener(event, oldVNode.events[event]);
       // 如果新事件的响应函数存在，则添加
-      newVNode.events[event] && oldVNode.element.addEventListener(event, newVNode.events[event].bind(xm));
+      if(newVNode.events[event]) {
+        const handler = newVNode.events[event] = newVNode.events[event].bind(xm);
+        oldVNode.element.addEventListener(event, handler);
+      }
     }
   });
-  newVNode.addElement(oldVNode.element);
-}
-// 比较文本节点
-export const diffTextNode = function(newVNode, oldVNode, parentVNode) {
-  if(newVNode.text !== oldVNode.text) {
-    oldVNode.element.updateText(newVNode.text, oldVNode.element);
-  }
   newVNode.addElement(oldVNode.element);
 }

@@ -11,8 +11,10 @@ class Element {
         this.setAttribute(key, value);
       });
       // 绑定事件
-      Object.entries(vnode.events).forEach(([key, value]) => {
-        this.addEventListener(key, value.bind(xm));
+      Object.keys(vnode.events).forEach(key => {
+        // 缓存bind后的函数，用于之后的函数移除
+        vnode.events[key] = vnode.events[key].bind(xm);
+        this.addEventListener(key, vnode.events[key]);
       });
     }
     // 文本节点
@@ -50,18 +52,15 @@ class Element {
   removeEventListener(name, handler) {
     this.el.removeEventListener(name, handler);
   }
-  // 更新文本节点
-  updateText(text, oldElement) {
-    oldElement.updateTextContent(text);
-    this.el = oldElement.el;
-  }
   // 更新文本内容
   updateTextContent(text) {
     this.el.textContent = text;
   }
+  // 替换子节点
   replaceChild(newElement, oldElement) {
     this.el.replaceChild(newElement.el, oldElement.el);
   }
+  // 在referenceElement前插入newElement，父节点为this.el
   insertBefore(newElement, referenceElement) {
     this.el.insertBefore(newElement.el, referenceElement && referenceElement.el);
   }
