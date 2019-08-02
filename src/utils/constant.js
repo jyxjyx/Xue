@@ -1,6 +1,7 @@
 import warn from './warn';
 const DEFAULT_OBJ = {};
 const DEFAULT_FN = function() {};
+const DEFAULT_ARR = [];
 
 // 验证options的类型的对象
 export const OPTIONS_NORM = {
@@ -28,7 +29,7 @@ export const OPTIONS_NORM = {
   },
   props: {
     type: 'object',
-    default: DEFAULT_OBJ
+    default: DEFAULT_ARR
   },
   methods: {
     type: 'object',
@@ -94,6 +95,7 @@ export const NativeTags = [
   'p',
   'a',
   'span',
+  'br'
 ];
 
 // 扩展NativeTags方法

@@ -1,5 +1,29 @@
 import Xue from './src/main';
 
+function HelloWorld2() {
+  return (<div>hello world</div>)
+}
+let HelloWorld = {
+  data() {
+    return {
+      msg: 'hello world'
+    }
+  },
+  props: ['test'],
+  beforeCreate() {
+    // setTimeout(() => {
+    //   this.msg = 'xixi'
+    //   console.log('inner settimout')
+    //   console.log(this)
+    // }, 4000)
+  },
+  render() {
+    return (<div>
+      { this.msg }
+      { this.test }
+    </div>)
+  }
+};
 let c = new Xue({
   root: '#app',
   // watch: {
@@ -27,7 +51,9 @@ let c = new Xue({
   },
   render() {
     return (<div>
-      { this.test1 }
+      <HelloWorld test={ this.test1 }></HelloWorld>
+      {/* <HelloWorld2></HelloWorld2> */}
+      {/* { this.test1 }
       <br />
       { this.test2.a }
       <br />
@@ -56,20 +82,20 @@ let c = new Xue({
       <div onClick={this.test1 === 'i am text1' ? this.fn1 : this.fn2} 
         className={this.test1 === 'i am text1' ? 'cls1' : 'cls2'}>
         my attrs and events will be change
-      </div>
+      </div> */}
     </div>);
   },
   beforeCreate() {
     setTimeout(() => {
       this.test1 = 'i am text1 change';
-      this.test2.a = 'i am text2 attr a change';
+      // this.test2.a = 'i am text2 attr a change';
       console.log('settimeout');
     }, 3000)
-    setTimeout(() => {
-      this.test1 = 'i am text1';
-      this.test2.a = 'i am text2 attr a';
-      console.log('settimeout');
-    }, 5000)
+    // setTimeout(() => {
+    //   this.test1 = 'i am text1';
+    //   this.test2.a = 'i am text2 attr a';
+    //   console.log('settimeout');
+    // }, 5000)
   }
 });
 

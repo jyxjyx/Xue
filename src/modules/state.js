@@ -28,27 +28,27 @@ export const initState = function() {
 
   // 将data设置为响应式
   observe(this.$data);
-
-
 }
 
 function observe(obj) {
   Object.entries(obj).forEach(([key, value]) => {
     defineReactive(obj, key);
     if(typeof value === 'object') observe(value);
-  })
+  });
+  
 }
 
 function defineReactive(target, key) {
   let value = target[key];
-  let dep = new Dep();
+  let dep = new Dep(value);
   Object.defineProperty(target, key, {
     get() {
-      dep.depend();
+      dep.addWatcher();
       Dep.target.addDep(dep);
       return value;
     },
     set(newV) {
+      dep.updateValue(newV);
       value = newV;
       dep.notify();
     }

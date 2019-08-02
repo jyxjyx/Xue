@@ -20,20 +20,19 @@ export const initMixin = function(Xue) {
     xm._callHook.call(xm, 'created');
 
     // 调用render生成VNode
-    Dep.target = xm.$watcher = new Watcher(() => {
+    xm.$watcher = new Watcher(() => {
       xm._callHook.call(xm, 'beforeUpdate');
-      const newVnodeTree = parseJsxObj(xm.$render());
+      const newVnodeTree = parseJsxObj(xm, xm.$render());
       xm.$vnodeTree = update(xm, newVnodeTree, xm.$vnodeTree);
-    }, 'render', () => {
-      xm._callHook.call(xm, 'updated');
-      // 重新缓存
-      xm.$vnodeTree = parseJsxObj(xm.$render());
-    });
+    }, 'render');
+    // 把当前Wacther入栈
+    Dep.pushTarget(xm.$watcher);
     
     xm._callHook.call(xm, 'beforeMount');
 
     // 生成vnode
-    xm.$vnodeTree = parseJsxObj(xm.$render());
+    xm.$vnodeTree = parseJsxObj(xm, xm.$render());
+    console.log(xm.$vnodeTree)
 
     // 生成并挂载DOM
     xm._mount.call(xm, createDOMTree(xm, xm.$vnodeTree).el);

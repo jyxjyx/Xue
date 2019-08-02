@@ -1,10 +1,21 @@
+import Xue from "../main";
+import Dep from './dep';
+
 class Element {
   constructor(vnode, xm) {
     this.xm = xm;
+    this.tagType = 'native';
     // 如果为null的话，则不做任何处理
     if(vnode.tag === null) return;
-    // 非文本节点
-    if(vnode.tag !== '') {
+    // 文本节点
+    if(vnode.tag === '') {
+      // 这句话不能接在return后
+      this.el = document.createTextNode(vnode.text);
+      return;
+    }
+
+    // 处理非文本节点
+    if(vnode.tagType === 'native') {
       this.el = document.createElement(vnode.tag);
       // 绑定属性
       Object.entries(vnode.attrs).forEach(([key, value]) => {
@@ -17,8 +28,17 @@ class Element {
         this.addEventListener(key, vnode.events[key]);
       });
     }
-    // 文本节点
-    else this.el = document.createTextNode(vnode.text);
+    else if(vnode.tagType === 'component') {
+      this.tagType = 'component';
+      // 将它的父级vnode作为组件实例的跟节点
+      vnode.tag.root = vnode.parent && vnode.parent.element.el;
+      vnode.tag.$parent = xm;
+      // vnode.tag就是Xue的options
+      const childXM = new Xue(vnode.tag);
+      this.el = childXM.$el;
+      // 组件init完成后，把组件的Watcher出栈
+      Dep.popTarget();
+    }
 
   }
   // 添加子节点

@@ -27,22 +27,28 @@ export const elementMixin = function(Xue) {
 };
 
 // 解析JSX，返回VNodeTree
-export const parseJsxObj = function(jsxObj) {
-  const vnodeTree = new VNode(jsxObj);
-  jsxObj && jsxObj.children && jsxObj.children.forEach(item => vnodeTree.addChild(parseJsxObj(item)));
+export const parseJsxObj = function(xm, jsxObj, parentVNode) {
+  const vnodeTree = new VNode(jsxObj, xm);
+  jsxObj && jsxObj.children && jsxObj.children.forEach(item => vnodeTree.addChild(parseJsxObj(xm, item, vnodeTree)));
+  vnodeTree.addParent(parentVNode);
   return vnodeTree;
 }
 // 首次渲染时生成DOM树
 export const createDOMTree = function(xm, vnodeTree) {
   const elementTree = new Element(vnodeTree, xm);
-  vnodeTree.children.forEach(item => elementTree.appendChild(createDOMTree(xm, item)));
   vnodeTree.addElement(elementTree);
+  vnodeTree.children.forEach(item => {
+    const childElementTree = createDOMTree(xm, item);
+    // 原生类型需要插入到父节点，组件类型的节点，在mount阶段就插入至父节点中
+    if(childElementTree.tagType === 'native') elementTree.appendChild(childElementTree)
+  });
   return elementTree;
 }
 // 更新DOM树
 export const update = function(xm, newVNode, oldVNode) {
   // 差异比对
   diff(xm, newVNode, oldVNode);
+  xm._callHook.call(xm, 'updated');
   return newVNode;
 }
 // 比较两个vnodeTree的差异
@@ -92,7 +98,15 @@ export const diffUpdateHandler = function(diffType, xm, newVNode, oldVNode, pare
     case 'delNode': diffDelNode(xm, newVNode, oldVNode, parentVNode); break;
     case 'replaceNode': diffReplaceNode(xm, newVNode, oldVNode, parentVNode); break;
     case 'replaceText': diffUpdateText(xm, newVNode, oldVNode, parentVNode); break;
-    case 'updateAttrsAndEvents': diffAttribute(xm, newVNode, oldVNode); diffEvent(xm, newVNode, oldVNode); break;
+    case 'updateAttrsAndEvents':
+      if(newVNode.tagType === 'native') {
+        diffAttribute(xm, newVNode, oldVNode);
+        diffEvent(xm, newVNode, oldVNode); 
+      } 
+      else {
+        diffComponentsAttr(xm, newVNode, oldVNode);
+      }
+      break;
     default: warn(`error diffType: ${ diffType }`);
   }
 }
@@ -145,4 +159,14 @@ export const diffEvent = function(xm, newVNode, oldVNode) {
     }
   });
   newVNode.addElement(oldVNode.element);
+}
+// 比较组件的属性
+export const diffComponentProps = function(xm, newVNode, oldVNode) {
+  const props = new Set(Object.keys(newVNode.attrs).concat(Object.keys(oldVNode.attrs)));
+  props.forEach(prop => {
+    if(newVNode.attrs[prop] !== oldVNode.attrs[prop]) {
+      // TODO:
+      oldVNode.xm.$props[prop] = newVNode.attrs[prop];
+    }
+  })
 }

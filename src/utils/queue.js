@@ -10,6 +10,8 @@ export const addUpdateQueue = function(watchers) {
   if(!waiting) {
     waiting = true;
     nextTick().then(() => {
+      // 当前queue若为空数组则直接退出
+      if(queue.length === 0) return waiting = false;
       for(let i = 0; i < queue.length; i++) {
         queue[i].run();
         if(i === queue.length - 1) waiting = false;
