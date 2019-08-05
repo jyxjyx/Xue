@@ -33,9 +33,14 @@ class Element {
       // 将它的父级vnode作为组件实例的跟节点
       vnode.tag.root = vnode.parent && vnode.parent.element.el;
       vnode.tag.$parent = xm;
+      vnode.tag.$props = vnode.attrs;
       // vnode.tag就是Xue的options
       const childXM = new Xue(vnode.tag);
+      // 重置当前的xm和el为新建子Xue的实例
+      this.xm = childXM;
       this.el = childXM.$el;
+      vnode.updateXM(childXM);
+      
       // 组件init完成后，把组件的Watcher出栈
       Dep.popTarget();
     }

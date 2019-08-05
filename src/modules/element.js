@@ -161,12 +161,12 @@ export const diffEvent = function(xm, newVNode, oldVNode) {
   newVNode.addElement(oldVNode.element);
 }
 // 比较组件的属性
-export const diffComponentProps = function(xm, newVNode, oldVNode) {
+export const diffComponentsAttr = function(xm, newVNode, oldVNode) {
   const props = new Set(Object.keys(newVNode.attrs).concat(Object.keys(oldVNode.attrs)));
   props.forEach(prop => {
     if(newVNode.attrs[prop] !== oldVNode.attrs[prop]) {
       // TODO:
-      oldVNode.xm.$props[prop] = newVNode.attrs[prop];
+      oldVNode.xm.props[prop] = newVNode.attrs[prop];
     }
   })
 }

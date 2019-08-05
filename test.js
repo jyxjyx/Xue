@@ -1,7 +1,7 @@
 import Xue from './src/main';
 
-function HelloWorld2() {
-  return (<div>hello world</div>)
+function HelloWorld2(props) {
+  return (<div>hello world:{ props.test }</div>)
 }
 let HelloWorld = {
   data() {
@@ -9,18 +9,18 @@ let HelloWorld = {
       msg: 'hello world'
     }
   },
-  props: ['test'],
   beforeCreate() {
     // setTimeout(() => {
     //   this.msg = 'xixi'
     //   console.log('inner settimout')
     //   console.log(this)
+      // this.props.test = 123
     // }, 4000)
   },
   render() {
     return (<div>
       { this.msg }
-      { this.test }
+      { this.props.test }
     </div>)
   }
 };
@@ -51,8 +51,11 @@ let c = new Xue({
   },
   render() {
     return (<div>
-      <HelloWorld test={ this.test1 }></HelloWorld>
-      {/* <HelloWorld2></HelloWorld2> */}
+      <div>
+        i am in father com:{ this.test1 }
+      </div>
+      {/* <HelloWorld test={ this.test1 }></HelloWorld> */}
+      <HelloWorld2 test={ this.test1 }></HelloWorld2>
       {/* { this.test1 }
       <br />
       { this.test2.a }

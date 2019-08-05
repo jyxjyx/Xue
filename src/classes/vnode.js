@@ -1,5 +1,6 @@
 import JSXObj from './jsxObj';
 import { NativeTags } from '../utils/constant';
+import { parseJsxObj } from '../modules/element';
 import Xue from '../main';
 
 class VNode {
@@ -23,7 +24,7 @@ class VNode {
       // 判断是否是原生标签
       if(NativeTags.includes(this.tag)) this.tagType = 'native';
       // 如果不是，则进行组件化处理
-      else {
+      else if(typeof this.tag === 'object') {
         // TODO:组件化逻辑
         this.tagType = 'component';
         this.tag.props = this.attrs;
@@ -32,6 +33,11 @@ class VNode {
         const componentsArr =  Object.keys(components);
         if(componentsArr.includes(this.tag)) {
         }
+      }
+      else if(typeof this.tag === 'function') {
+        this.tagType = 'function';
+        this.tag = tagMsg.tag(this.attrs);
+        return parseJsxObj(xm, tagMsg.tag(this.attrs));
       }
       
     }
@@ -56,6 +62,9 @@ class VNode {
   // 添加父节点
   addParent(parent) {
     this.parent = parent;
+  }
+  updateXM(xm) {
+    this.xm = xm;
   }
 }
 export default VNode;
