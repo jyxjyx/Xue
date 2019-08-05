@@ -73,9 +73,9 @@ let c = new Xue({
       {/* <div>
         i am in father com:{ this.test1 }
       </div> */}
-      {/* <HelloWorld test={ this.test1 }></HelloWorld> */}
-      {/* <HelloWorld2 test={ this.test1 }></HelloWorld2> */}
-      {/* { this.test1 }
+      <HelloWorld test={ this.test1 }></HelloWorld>
+      <HelloWorld2 test={ this.test1 }></HelloWorld2>
+      { this.test1 }
       <br />
       { this.test2.a }
       <br />
@@ -104,7 +104,7 @@ let c = new Xue({
       <div onClick={this.test1 === 'i am text1' ? this.fn1 : this.fn2} 
         className={this.test1 === 'i am text1' ? 'cls1' : 'cls2'}>
         my attrs and events will be change
-      </div> */}
+      </div>
     </div>);
   },
   beforeCreate() {

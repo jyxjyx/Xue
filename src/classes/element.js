@@ -30,7 +30,7 @@ class Element {
     }
     else if(vnode.tagType === 'component') {
       this.tagType = 'component';
-      // 将它的父级vnode作为组件实例的跟节点
+      // 将它的父级vnode作为组件实例的根节点
       vnode.tag.root = vnode.parent && vnode.parent.element.el;
       vnode.tag.$parent = xm;
       vnode.tag.$props = vnode.attrs;
