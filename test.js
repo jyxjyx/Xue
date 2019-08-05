@@ -1,8 +1,26 @@
 import Xue from './src/main';
+import { XueRouterCls, XueRouterCom } from './src/router';
 
 function HelloWorld2(props) {
-  return (<div>hello world:{ props.test }</div>)
+  return (<div>hello world2</div>)
 }
+function HelloWorld1(props) {
+  return (<div>hello world1</div>)
+}
+const router = new XueRouterCls({
+  routes: [
+    {
+      path: '/hello1',
+      component: HelloWorld1
+    },
+    {
+      path: '/hello2',
+      component: HelloWorld2
+    }
+  ]
+});
+
+
 let HelloWorld = {
   data() {
     return {
@@ -51,11 +69,12 @@ let c = new Xue({
   },
   render() {
     return (<div>
-      <div>
+      <XueRouterCom options={ router }></XueRouterCom>
+      {/* <div>
         i am in father com:{ this.test1 }
-      </div>
+      </div> */}
       {/* <HelloWorld test={ this.test1 }></HelloWorld> */}
-      <HelloWorld2 test={ this.test1 }></HelloWorld2>
+      {/* <HelloWorld2 test={ this.test1 }></HelloWorld2> */}
       {/* { this.test1 }
       <br />
       { this.test2.a }
