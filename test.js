@@ -2,7 +2,7 @@ import Xue from './src/main';
 import { XueRouterCls, XueRouterCom } from './src/router';
 
 function Child2(props) {
-  return (<div>i am test1 in Child2:{ props.test }</div>)
+  return (<div>hello world2</div>)
 }
 function Child1(props) {
   return (<div>hello world1</div>)
@@ -66,12 +66,12 @@ let c = new Xue({
   },
   render() {
     return (<div>
-      {/* <XueRouterCom options={ router }></XueRouterCom> */}
-      <div>
+      <XueRouterCom options={ router }></XueRouterCom>
+      {/* <div>
         i am test1 in father:{ this.test1 }
       </div>
       <Child test={ this.test1 }></Child>
-      <Child2 test={ this.test1 }></Child2>
+      <Child2 test={ this.test1 }></Child2> */}
       {/* { this.test1 }
       <br />
       { this.test2.a }
