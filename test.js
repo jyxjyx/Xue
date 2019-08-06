@@ -1,39 +1,36 @@
 import Xue from './src/main';
 import { XueRouterCls, XueRouterCom } from './src/router';
 
-function HelloWorld2(props) {
-  return (<div>hello world2</div>)
+function Child2(props) {
+  return (<div>i am test1 in Child2:{ props.test }</div>)
 }
-function HelloWorld1(props) {
+function Child1(props) {
   return (<div>hello world1</div>)
 }
 const router = new XueRouterCls({
   routes: [
     {
       path: '/hello1',
-      component: HelloWorld1
+      component: Child1
     },
     {
       path: '/hello2',
-      component: HelloWorld2
+      component: Child2
     }
   ]
 });
 
 
-let HelloWorld = {
+let Child = {
   data() {
     return {
-      msg: 'hello world'
+      msg: 'i am test1 in Child:'
     }
   },
   beforeCreate() {
-    // setTimeout(() => {
-    //   this.msg = 'xixi'
-    //   console.log('inner settimout')
-    //   console.log(this)
-      // this.props.test = 123
-    // }, 4000)
+    setTimeout(() => {
+      this.msg = 'hello world:'
+    }, 4000)
   },
   render() {
     return (<div>
@@ -69,13 +66,13 @@ let c = new Xue({
   },
   render() {
     return (<div>
-      <XueRouterCom options={ router }></XueRouterCom>
-      {/* <div>
-        i am in father com:{ this.test1 }
-      </div> */}
-      <HelloWorld test={ this.test1 }></HelloWorld>
-      <HelloWorld2 test={ this.test1 }></HelloWorld2>
-      { this.test1 }
+      {/* <XueRouterCom options={ router }></XueRouterCom> */}
+      <div>
+        i am test1 in father:{ this.test1 }
+      </div>
+      <Child test={ this.test1 }></Child>
+      <Child2 test={ this.test1 }></Child2>
+      {/* { this.test1 }
       <br />
       { this.test2.a }
       <br />
@@ -104,10 +101,10 @@ let c = new Xue({
       <div onClick={this.test1 === 'i am text1' ? this.fn1 : this.fn2} 
         className={this.test1 === 'i am text1' ? 'cls1' : 'cls2'}>
         my attrs and events will be change
-      </div>
+      </div> */}
     </div>);
   },
-  beforeCreate() {
+  mounted() {
     setTimeout(() => {
       this.test1 = 'i am text1 change';
       // this.test2.a = 'i am text2 attr a change';
